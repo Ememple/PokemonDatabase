@@ -2,8 +2,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the TypeRepository interface using MySQL as the data store (Repository pattern)
+ * This class handles all direct database interactions for Types, including transactions and CSV imports
+ */
 public class MySQLTypeRepository implements TypeRepository {
 
+    /**
+     * Retrieves all types in the database
+     * @return List of all types
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public List<Types> getAllTypes() throws SQLException {
         List<Types> types = new ArrayList<>();
@@ -23,6 +32,11 @@ public class MySQLTypeRepository implements TypeRepository {
         return types;
     }
 
+    /**
+     * Adds a new type to the database
+     * @param typeName Name
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void addType(String typeName) throws SQLException {
         String sql = "INSERT INTO types (type_name) VALUES (?)";
@@ -33,6 +47,11 @@ public class MySQLTypeRepository implements TypeRepository {
         }
     }
 
+    /**
+     * Removes a type  from the database
+     * @param id ID of the type we want to delete
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void deleteType(int id) throws SQLException {
         String sql = "DELETE FROM types WHERE id = ?";

@@ -4,8 +4,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * Implementation of the PokemonRepository interface using MySQL as the data store (Repository pattern)
+ * This class handles all direct database interactions for Pokémon, including transactions and CSV imports
+ */
 public class MySQLPokemonRepository implements PokemonRepository {
 
+    /**
+     * Inserts new Pokémon into the database within a single transaction
+     * @param p Model containing trainer ID, nickname, and rarity
+     * @param hp HP value
+     * @param attack Attack value
+     * @param defense Defense value
+     * @return New ID
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public int catchNewPokemon(Pokemon p, int hp, int attack, int defense) throws SQLException {
         Connection conn = DatabaseConfig.getInstance().getConnection();
@@ -43,7 +56,12 @@ public class MySQLPokemonRepository implements PokemonRepository {
         }
     }
 
-
+    /**
+     * Add type to pokémon
+     * @param pokemonId ID of the pokémon
+     * @param typeId ID of the type we want to assign
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void addTypeToPokemon(int pokemonId, int typeId) throws SQLException {
         String sql = "INSERT INTO pokemon_types (pokemon_id, type_id) VALUES (?, ?)";
@@ -55,6 +73,11 @@ public class MySQLPokemonRepository implements PokemonRepository {
         }
     }
 
+    /**
+     * Removes a Pokémon  from the database
+     * @param id ID of the pokémon we want to remove
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void deletePokemon(int id) throws SQLException {
         String sql = "DELETE FROM pokemons WHERE id = ?";
@@ -65,6 +88,11 @@ public class MySQLPokemonRepository implements PokemonRepository {
         }
     }
 
+    /**
+     * Imports the Pokémon from CSV file
+     * @param filePath Path to the CSV file
+     * @throws SQLException If the query execution fails
+     */
     public void importPokemonsFromCSV(String filePath) throws SQLException {
         File file = new File(filePath);
         if (!file.exists() || file.length() == 0) {
@@ -100,17 +128,16 @@ public class MySQLPokemonRepository implements PokemonRepository {
         }
     }
 
-    private void addTypeByName(int pokemonId, String typeName) throws SQLException {
-        String sql = "INSERT INTO pokemon_types (pokemon_id, type_id) " +
-                "SELECT ?, id FROM types WHERE type_name = ?";
-        try (Connection conn = DatabaseConfig.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, pokemonId);
-            pstmt.setString(2, typeName);
-            pstmt.executeUpdate();
-        }
-    }
-
+    /**
+     * Updates pokémon data
+     * @param id ID of the pokémon we want to update
+     * @param nickname Nickname we want to set
+     * @param rarity Rarity we want to set
+     * @param hp HP we want to set
+     * @param attack Attack we want to set
+     * @param defense Defense we want to set
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void updatePokemon(int id, String nickname, String rarity, int hp, int attack, int defense) throws SQLException {
         String sqlPoke = "UPDATE pokemons SET nickname = ?, rarity = ? WHERE id = ?";
@@ -140,6 +167,13 @@ public class MySQLPokemonRepository implements PokemonRepository {
         }
     }
 
+    /**
+     * Updates the pokémon types
+     * @param pokemonId ID of the pokémon
+     * @param type1Id ID of type 1
+     * @param type2Id ID of type 2
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void updatePokemonTypes(int pokemonId, Integer type1Id, Integer type2Id) throws SQLException {
         String deleteSql = "DELETE FROM pokemon_types WHERE pokemon_id = ?";

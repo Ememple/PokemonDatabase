@@ -1,3 +1,6 @@
+/**
+ * Represents a Types entity in the database
+ */
 public class Types {
     private int id;
     private String typeName;

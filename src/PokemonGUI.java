@@ -5,6 +5,9 @@ import java.sql.*;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * GUI class for the Pokémon Database Manager
+ */
 public class PokemonGUI extends JFrame {
     private JTable pokemonTable;
     private JTable trainerTable;
@@ -15,6 +18,9 @@ public class PokemonGUI extends JFrame {
     private final TrainerRepository trainerRepo = new MySQLTrainerRepository();
     private final TypeRepository typeRepo = new MySQLTypeRepository();
 
+    /**
+     * Initializes the main window and loads initial data
+     */
     public PokemonGUI() {
         setTitle("Pokémon Database Manager");
         setSize(1200, 750);
@@ -32,6 +38,10 @@ public class PokemonGUI extends JFrame {
         refreshAllData();
     }
 
+    /**
+     * Method for initializing the Pokémon panel
+     * @return Pokémon Panel
+     */
     private JPanel createPokemonPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         pokemonTable = new JTable();
@@ -81,6 +91,9 @@ public class PokemonGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Initializes the form for editing new Pokémon
+     */
     private void showEditPokemonDialog() {
         int row = pokemonTable.getSelectedRow();
         if (row == -1) {
@@ -152,6 +165,10 @@ public class PokemonGUI extends JFrame {
         }
     }
 
+    /**
+     * Method for initializing the Trainer panel
+     * @return Trainer Panel
+     */
     private JPanel createTrainerPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         trainerTable = new JTable();
@@ -202,6 +219,9 @@ public class PokemonGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Initializes the form for editing new Trainer
+     */
     private void showEditTrainerDialog() {
         int row = trainerTable.getSelectedRow();
         if (row == -1) {
@@ -242,6 +262,10 @@ public class PokemonGUI extends JFrame {
         }
     }
 
+    /**
+     * Method for initializing the Type panel
+     * @return Trainer Panel
+     */
     private JPanel createTypePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         typesTable = new JTable();
@@ -307,6 +331,10 @@ public class PokemonGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Method for initializing the Stats panel
+     * @return Stats Panel
+     */
     private JPanel createStatsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         statsTable = new JTable();
@@ -322,6 +350,10 @@ public class PokemonGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Method for initializing the Link panel
+     * @return Link Panel
+     */
     private JPanel createLinkPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         linkTable = new JTable();
@@ -337,6 +369,9 @@ public class PokemonGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Initializes the form for adding new Pokémon
+     */
     private void showCatchPokemonDialog() {
         try {
             List<Trainer> trainers = trainerRepo.getAllTrainers();
@@ -398,6 +433,9 @@ public class PokemonGUI extends JFrame {
         }
     }
 
+    /**
+     * Initializes the form for adding new Pokémon
+     */
     private void showAddTrainerDialog() {
         JTextField nameField = new JTextField();
         JTextField xpField = new JTextField("0");
@@ -414,6 +452,9 @@ public class PokemonGUI extends JFrame {
         }
     }
 
+    /**
+     * Reloads the data from database
+     */
     private void refreshAllData() {
         try {
             pokemonTable.setModel(buildTableModel("SELECT * FROM view_detailed_pokemons"));
@@ -424,10 +465,20 @@ public class PokemonGUI extends JFrame {
         } catch (SQLException e) { showError(e.getMessage()); }
     }
 
+    /**
+     * Creates popup for error
+     * @param msg Error message
+     */
     private void showError(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Builds a table from sql query
+     * @param query SQL query
+     * @return New table
+     * @throws SQLException If the query execution fails
+     */
     public static DefaultTableModel buildTableModel(String query) throws SQLException {
         Connection conn = DatabaseConfig.getInstance().getConnection();
         Statement stmt = conn.createStatement();
@@ -445,6 +496,9 @@ public class PokemonGUI extends JFrame {
         return new DefaultTableModel(data, columnNames);
     }
 
+    /**
+     *
+     */
     private static class TrainerWrapper {
         Trainer trainer;
         TrainerWrapper(Trainer t) { this.trainer = t; }

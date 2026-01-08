@@ -1,3 +1,6 @@
+/**
+ * Represents a PokémonStats entity in the database
+ */
 public class PokemonStats {
     private int hp;
     private int attack;

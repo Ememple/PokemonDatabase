@@ -1,5 +1,8 @@
 import java.sql.SQLException;
 
+/**
+ * Interface defining the data access layer for Pokémon entities
+ */
 public interface PokemonRepository {
     int catchNewPokemon(Pokemon p, int hp, int attack, int defense) throws SQLException;
 

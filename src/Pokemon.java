@@ -1,3 +1,6 @@
+/**
+ * Represents a Pokémon entity in the database
+ */
 public class Pokemon {
     private int id;
     private int trainerId;

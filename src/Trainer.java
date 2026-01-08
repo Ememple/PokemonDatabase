@@ -1,3 +1,6 @@
+/**
+ * Represents a Trainer entity in the database
+ */
 public class Trainer {
     private int id;
     private String name;

@@ -6,8 +6,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of the TrainerRepository interface using MySQL as the data store (Repository pattern)
+ * This class handles all direct database interactions for Trainers, including transactions and CSV imports
+ */
 public class MySQLTrainerRepository implements TrainerRepository {
 
+    /**
+     * Retrieves all trainers in the database
+     * @return List of all trainers
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public List<Trainer> getAllTrainers() throws SQLException {
         List<Trainer> trainers = new ArrayList<>();
@@ -28,6 +37,13 @@ public class MySQLTrainerRepository implements TrainerRepository {
         return trainers;
     }
 
+    /**
+     * Adds a new trainer to the database
+     * @param name Name
+     * @param xp Xp points
+     * @param isLeader If trainer is gym leader
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void addTrainer(String name, float xp, boolean isLeader) throws SQLException {
         String sql = "INSERT INTO trainers (name, experience_points, is_gym_leader) VALUES (?, ?, ?)";
@@ -40,6 +56,11 @@ public class MySQLTrainerRepository implements TrainerRepository {
         }
     }
 
+    /**
+     * Removes a trainer  from the database
+     * @param id ID of the trainer we want to delete
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void deleteTrainer(int id) throws SQLException {
         String sql = "DELETE FROM trainers WHERE id = ?";
@@ -50,6 +71,14 @@ public class MySQLTrainerRepository implements TrainerRepository {
         }
     }
 
+    /**
+     * Updates a trainer  from the database
+     * @param id ID of the trainer we want to update
+     * @param name New name
+     * @param xp New Xp points
+     * @param isGymLeader New boolean for if he is gym leader
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void updateTrainer(int id, String name, float xp, boolean isGymLeader) throws SQLException {
         String sql = "UPDATE trainers SET name = ?, xp = ?, is_gym_leader = ? WHERE id = ?";
@@ -63,6 +92,11 @@ public class MySQLTrainerRepository implements TrainerRepository {
         }
     }
 
+    /**
+     * Imports the trainers from CSV file
+     * @param filePath Path to the CSV file
+     * @throws SQLException If the query execution fails
+     */
     @Override
     public void importTrainersFromCSV(String filePath) throws SQLException {
         File file = new File(filePath);

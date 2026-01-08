@@ -1,6 +1,9 @@
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Interface defining the data access layer for Trainer entities
+ */
 public interface TrainerRepository {
     List<Trainer> getAllTrainers() throws SQLException;
 
