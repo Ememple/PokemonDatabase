@@ -158,11 +158,13 @@ public class PokemonGUI extends JFrame {
         panel.add(new JScrollPane(trainerTable), BorderLayout.CENTER);
 
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton btnRefresh = new JButton("Refresh");
         JButton btnAdd = new JButton("New Trainer");
         JButton btnEdit = new JButton("Edit Trainer");
         JButton btnImport = new JButton("Import from CSV");
         JButton btnDelete = new JButton("Delete Trainer");
 
+        btnRefresh.addActionListener(e -> refreshAllData());
         btnAdd.addActionListener(e -> showAddTrainerDialog());
         btnEdit.addActionListener(e -> showEditTrainerDialog());
 
@@ -191,6 +193,7 @@ public class PokemonGUI extends JFrame {
             }
         });
 
+        controls.add(btnRefresh);
         controls.add(btnAdd);
         controls.add(btnEdit);
         controls.add(btnImport);
@@ -312,11 +315,7 @@ public class PokemonGUI extends JFrame {
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnRefresh = new JButton("Refresh");
 
-        btnRefresh.addActionListener(e -> {
-            try {
-                statsTable.setModel(buildTableModel("SELECT * FROM pokemon_stats"));
-            } catch (SQLException ex) { showError(ex.getMessage()); }
-        });
+        btnRefresh.addActionListener(e -> refreshAllData());
 
         controls.add(btnRefresh);
         panel.add(controls, BorderLayout.SOUTH);
@@ -331,11 +330,7 @@ public class PokemonGUI extends JFrame {
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnRefresh = new JButton("Refresh");
 
-        btnRefresh.addActionListener(e -> {
-            try {
-                linkTable.setModel(buildTableModel("SELECT * FROM pokemon_types"));
-            } catch (SQLException ex) { showError(ex.getMessage()); }
-        });
+        btnRefresh.addActionListener(e -> refreshAllData());
 
         controls.add(btnRefresh);
         panel.add(controls, BorderLayout.SOUTH);
