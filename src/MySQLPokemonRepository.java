@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -65,30 +66,37 @@ public class MySQLPokemonRepository implements PokemonRepository {
     }
 
     public void importPokemonsFromCSV(String filePath) throws SQLException {
+        File file = new File(filePath);
+        if (!file.exists() || file.length() == 0) {
+            throw new SQLException("The selected file is empty or does not exist.");
+        }
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            br.readLine();
+            String header = br.readLine();
+            if (header == null) throw new SQLException("File has no content.");
+
+            int importedCount = 0;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(";");
-
                 if (data.length >= 6) {
                     Pokemon p = new Pokemon(Integer.parseInt(data[0]), data[1], data[2]);
                     int hp = Integer.parseInt(data[3]);
                     int atk = Integer.parseInt(data[4]);
                     int def = Integer.parseInt(data[5]);
 
-                    int newPokemonId = catchNewPokemon(p, hp, atk, def);
-
-                    if (data.length > 6 && !data[6].trim().isEmpty()) {
-                        addTypeByName(newPokemonId, data[6].trim());
-                    }
-                    if (data.length > 7 && !data[7].trim().isEmpty()) {
-                        addTypeByName(newPokemonId, data[7].trim());
-                    }
+                    catchNewPokemon(p, hp, atk, def);
+                    importedCount++;
                 }
             }
+
+            if (importedCount == 0) {
+                throw new SQLException("No valid Pokémon data found in the file.");
+            }
         } catch (IOException e) {
-            throw new SQLException("File error: " + e.getMessage());
+            throw new SQLException("Reading error: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            throw new SQLException("Data format error: Check if all numbers are valid.");
         }
     }
 

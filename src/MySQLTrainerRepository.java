@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -64,36 +65,33 @@ public class MySQLTrainerRepository implements TrainerRepository {
 
     @Override
     public void importTrainersFromCSV(String filePath) throws SQLException {
-        String sql = "INSERT INTO trainers (name, experience_points, is_gym_leader) VALUES (?, ?, ?)";
+        File file = new File(filePath);
+        if (!file.exists() || file.length() == 0) {
+            throw new SQLException("The trainer file is empty or does not exist.");
+        }
 
-        try (Connection conn = DatabaseConfig.getInstance().getConnection();
-             BufferedReader br = new BufferedReader(new FileReader(filePath));
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            boolean firstLine = true;
+            String header = br.readLine();
+            if (header == null) throw new SQLException("Trainer file has no header.");
 
-            conn.setAutoCommit(false);
-
+            int count = 0;
             while ((line = br.readLine()) != null) {
-                if (firstLine) { firstLine = false; continue; }
-
                 String[] data = line.split(";");
                 if (data.length >= 3) {
-                    pstmt.setString(1, data[0].trim());
-                    pstmt.setFloat(2, Float.parseFloat(data[1].trim()));
-                    pstmt.setBoolean(3, data[2].trim().equalsIgnoreCase("true") || data[2].trim().equals("1"));
-                    pstmt.addBatch();
+                    String name = data[0].trim();
+                    float xp = Float.parseFloat(data[1].trim());
+                    boolean isGymLeader = Boolean.parseBoolean(data[2].trim());
+
+                    addTrainer(name, xp, isGymLeader);
+                    count++;
                 }
             }
-            pstmt.executeBatch();
-            conn.commit();
-            System.out.println("Import trenérů dokončen.");
-
+            if (count == 0) throw new SQLException("No valid trainer records were processed.");
         } catch (IOException e) {
-            System.err.println("Chyba při čtení CSV: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("Chyba při importu do DB: " + e.getMessage());
+            throw new SQLException("File access error: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            throw new SQLException("XP format error: Please ensure experience is a number.");
         }
     }
 
