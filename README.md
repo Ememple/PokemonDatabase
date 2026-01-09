@@ -1,8 +1,12 @@
-<h1>Pokémon Database</h1>
+<h1>Pokémon Database Manager</h1>
 
   <p>
     A desktop application for editing a Pokémon database, including trainers and their statistics. <br>
   </p>
+
+Author: Jan Čihař
+
+School: SPŠE Ječná
   
 
 ## Table of contents
@@ -17,7 +21,7 @@
 You need to have at least Java 17 installed and MySQL server
 
 ## How to run
-1. Create the sql database and run the query
+1. Run the SQL script to create database and tables with test data
 2. Put the jar file and folder named res in same folder
 3. Edit the config file and put it in res
   ```text
